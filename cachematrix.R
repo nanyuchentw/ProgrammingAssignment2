@@ -12,7 +12,7 @@ makeCacheMatrix <- function(x = matrix()) {
             r_m <<- NULL                          ## if an arbitrary matrix is set to cache, the inverted matrix (i.e. r_m) is set to NULL
         }
         get <- function() x                       ## get() is used to get the cached matrix
-        setResult <- function (m) r_m <<- m       ## setResult() is used to set an arbitrary matrix as the result inverted matrix
+        setResult <- function (z) r_m <<- z       ## setResult() is used to set an arbitrary matrix as the result inverted matrix
         getResult <- function () r_m              ## getResult() is used to get the cached inverted matrix: r_m
         list(set= set, get= get, setResult=setResult, getResult=getResult)    #The makeCacheMatrix contain the above 4 functions and make them into a list
 }
@@ -23,9 +23,15 @@ makeCacheMatrix <- function(x = matrix()) {
 ## The r_m is then used as the argument for $setResult() to set the stored inverted matrix
 
 cacheSolve <- function(x, ...) {
-        r_m <- solve(x$get())
-        x$setResult (r_m)
-        r_m                          ## Return a matrix r_m that is the inverse of 'x'
+        r_m <- x$getResult()
+        if (!is.null(r_m)) {                  ## check if the same inverted matrix has been calculated 
+            print("getting cache data")
+            r_m
+        } else {
+            r_m <- solve(x$get())
+            x$setResult (r_m)
+            r_m                               ## Return a matrix r_m that is the inverse of 'x'
+        }                                     
 }
 
 ## Try these with a test matrix: test_M
@@ -38,6 +44,5 @@ cacheSolve <- function(x, ...) {
 ## cacheSolve(x)
 ## Then we get the inverted matrix (r_m) of our input matrix test_M by solve() 
 ## The cacheSolve() also takes this resulted matrix r_m to setResult() the cached matrix x
-## Now we can see there is an inverted matrix in x$getResult
+## Now we can see there is an inverted matrix in x$getResult()
 #  x$getResult()
-
